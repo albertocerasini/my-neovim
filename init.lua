@@ -283,6 +283,7 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      current_line_blame = true,
     },
   },
 
@@ -434,6 +435,7 @@ require('lazy').setup({
               '.next/',
               'build/',
               'target/',
+              'ios/Runner.xcassets',
             },
           },
         },
@@ -712,6 +714,7 @@ require('lazy').setup({
         ts_ls = {},
         --
 
+        tailwindcss = {},
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
