@@ -1,6 +1,6 @@
 local builtin = require 'telescope.builtin'
 local telescope = require 'telescope'
-
+event = 'VimEnter'
 -- In this case, we create a function that lets us more easily define mappings specific
 -- for LSP related items. It sets the mode, buffer and description for us each time.
 local map = function(keys, func, desc, mode)
@@ -29,6 +29,7 @@ return {
 
   -- Diagnostic keymaps
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' }),
+  vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open [D]iagnostic float' }),
   vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'toggle file tree' }),
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which

@@ -197,6 +197,10 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     error('Error cloning lazy.nvim:\n' .. out)
   end
 end
+local map = function(keys, func, desc, mode)
+  mode = mode or 'n'
+  vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+end
 
 ---@type vim.Option
 local rtp = vim.opt.rtp
@@ -595,6 +599,23 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- Automatically show diagnostics in a floating window when cursor is on a diagnostic
+      vim.api.nvim_create_autocmd('CursorHold', {
+        group = vim.api.nvim_create_augroup('diagnostic-float', { clear = true }),
+        callback = function()
+          -- Get diagnostics at current position
+          local opts = {
+            focusable = false,
+            close_events = { 'BufLeave', 'CursorMoved', 'InsertEnter', 'FocusLost' },
+            border = 'rounded',
+            source = 'if_many',
+            prefix = ' ',
+            scope = 'cursor',
+          }
+          vim.diagnostic.open_float(nil, opts)
+        end,
+      })
 
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
