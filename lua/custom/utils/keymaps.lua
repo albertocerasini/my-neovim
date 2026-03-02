@@ -17,20 +17,33 @@ local function toggle_theme()
   end
 end
 
-local function open_terminal()
-  -- Opens a terminal in a horizontal split
-  vim.cmd.split()
-  vim.cmd.terminal()
-  vim.cmd.startinsert()
+-- Get git root directory for consistent file search
+local function get_git_root()
+  local git_root = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
+  if vim.v.shell_error == 0 then
+    return git_root
+  end
+  return vim.fn.getcwd()
 end
 
 return {
   vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>'),
 
-  -- Diagnostic keymaps
-  vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' }),
-  vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open [D]iagnostic float' }),
-  vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'toggle file tree' }),
+  -- Azioni comuni (stile AstroNvim)
+  vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = 'Save file' }),
+  vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = 'Save all files' }),
+  vim.keymap.set('n', '<leader>q', '<cmd>q<CR>', { desc = 'Quit' }),
+  vim.keymap.set('n', '<leader>qa', '<cmd>qa<CR>', { desc = 'Quit All' }),
+  vim.keymap.set('n', '<leader>Q', '<cmd>q!<CR>', { desc = 'Quit without saving' }),
+  vim.keymap.set('n', '<leader>c', '<cmd>bd<CR>', { desc = 'Close buffer' }),
+  vim.keymap.set('n', '<leader>C', '<cmd>bd!<CR>', { desc = 'Close buffer (force)' }),
+
+  -- Diagnostic keymaps (sotto <leader>x)
+  vim.keymap.set('n', '<leader>xq', vim.diagnostic.setloclist, { desc = 'Diagnostic [Q]uickfix list' }),
+  vim.keymap.set('n', '<leader>xd', vim.diagnostic.open_float, { desc = '[D]iagnostic float' }),
+
+  -- File explorer
+  vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Toggle file explorer' }),
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
   -- is not what someone will guess without a bit more experience.
@@ -50,24 +63,44 @@ return {
   --
   --  See `:help wincmd` for a list of all window commands
 
-  -- TELESCOPE KEYMAPS
+  -- Window navigation
   vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' }),
   vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' }),
   vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' }),
   vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' }),
-  vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' }),
-  vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' }),
-  vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' }),
-  vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' }),
-  vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' }),
-  vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' }),
-  vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' }),
-  vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' }),
-  vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' }),
-  vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' }),
-  vim.keymap.set('n', '<leader>tc', builtin.colorscheme, { desc = '[T]heme [C]olorscheme selector' }),
-  vim.keymap.set('n', '<leader>sp', telescope.extensions.projects.projects, { desc = '[S]earch [P]rojects' }),
 
+  -- FIND KEYMAPS (stile AstroNvim)
+  vim.keymap.set('n', '<leader>ff', function()
+    builtin.find_files { cwd = get_git_root() }
+  end, { desc = '[F]ind [F]iles' }),
+  vim.keymap.set('n', '<leader>fF', function()
+    builtin.find_files { cwd = get_git_root(), hidden = true, no_ignore = true }
+  end, { desc = '[F]ind ALL [F]iles (include hidden/ignored)' }),
+  vim.keymap.set('n', '<leader>fw', function()
+    builtin.live_grep { cwd = get_git_root() }
+  end, { desc = '[F]ind [W]ords (grep)' }),
+  vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[F]ind [B]uffers' }),
+  vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' }),
+  vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = '[F]ind [K]eymaps' }),
+  vim.keymap.set('n', '<leader>fo', builtin.oldfiles, { desc = '[F]ind [O]ld/recent files' }),
+  vim.keymap.set('n', '<leader>fc', function()
+    builtin.grep_string { cwd = get_git_root() }
+  end, { desc = '[F]ind [C]urrent word' }),
+  vim.keymap.set('n', '<leader>fD', builtin.diagnostics, { desc = '[F]ind [D]iagnostics' }),
+  vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[F]ind [R]esume' }),
+  vim.keymap.set('n', '<leader>ft', builtin.builtin, { desc = '[F]ind [T]elescope builtins' }),
+  vim.keymap.set('n', '<leader>fp', telescope.extensions.projects.projects, { desc = '[F]ind [P]rojects' }),
+  vim.keymap.set('n', '<leader>fC', function()
+    builtin.colorscheme { enable_preview = true }
+  end, { desc = '[F]ind [C]olorscheme' }),
+
+  -- DBUI
+  -- Open database UI
+  vim.keymap.set('n', '<leader>du', ':DBUI<CR>', { desc = 'Open Database UI' }),
+  -- Close database UI
+  vim.keymap.set('n', '<leader>dq', ':DBUIQuit<CR>', { desc = 'Close Database UI' }),
+  -- Toggle database UI
+  vim.keymap.set('n', '<leader>dt', ':DBUIToggle<CR>', { desc = 'Toggle Database UI' }),
   -- LSP Keymaps
 
   -- Rename the variable under your cursor.
@@ -107,5 +140,4 @@ return {
   --  the definition of its *type*, not where it was *defined*.
   map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition'),
   vim.keymap.set('n', '<leader>ut', toggle_theme, {}),
-  vim.keymap.set('n', '<leader>tt', open_terminal, { desc = '[T]erminal [T]oggle' }),
 }

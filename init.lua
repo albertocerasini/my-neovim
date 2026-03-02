@@ -171,10 +171,6 @@ vim.o.confirm = true
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
---
---
--- vim.keymap.set('n', '<leader>kt',{})
---vim.builtin.which_key.mappings['t'] = { '<cmd>ToggleTerm direction=vertical size=50<CR>', 'Terminal' }
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -317,9 +313,10 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>s', group = '[S]earch' },
+        { '<leader>f', group = '[F]ind' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>x', group = 'Diagnostics' },
       },
     },
   },
