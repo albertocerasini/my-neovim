@@ -39,6 +39,12 @@ return {
       zsh = { 'shfmt' },
       sql = { 'sql_formatter' },
       rust = { 'rustfmt' },
+      -- PHP: Pint (Laravel) o PHP-CS-Fixer da vendor/bin del progetto;
+      -- se nessuno dei due c'è, formatta intelephense.
+      php = { 'pint', 'php_cs_fixer', stop_after_first = true },
+      -- C#: CSharpier se il progetto lo usa (dotnet tool), altrimenti Roslyn,
+      -- che rispetta .editorconfig.
+      cs = { 'csharpier' },
       -- dart e nginx usano il formattatore del rispettivo language server.
     },
 

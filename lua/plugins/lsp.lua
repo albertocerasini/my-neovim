@@ -201,6 +201,27 @@ return {
         docker_compose_language_service = {},
         marksman = {}, -- Markdown
 
+        -- PHP (Laravel, Symfony, WordPress, ...). Funziona anche senza PHP
+        -- installato. Licenza premium (opzionale):
+        --   init_options = { licenceKey = '<chiave o percorso del file>' }
+        intelephense = {
+          settings = {
+            intelephense = {
+              -- Il limite di default (1 MB) esclude file generati come _ide_helper.php.
+              files = { maxSize = 5000000 },
+            },
+          },
+        },
+
+        -- C# / .NET: Roslyn, lo stesso server dell'estensione C# di VS Code.
+        -- Apre da solo la .sln (o i .csproj) trovata risalendo dal file.
+        -- Richiede l'SDK .NET (`dotnet`).
+        roslyn_ls = {
+          settings = {
+            ['csharp|formatting'] = { dotnet_organize_imports_on_format = true },
+          },
+        },
+
         -- nginx: la sintassi arriva da treesitter. Per il language server
         -- (richiede Python 3.10+) aggiungi qui `nginx_language_server = {}`.
       }
@@ -226,6 +247,9 @@ return {
           'sql-formatter', -- SQL / PostgreSQL
           'codelldb', -- debugger per Rust
           'js-debug-adapter', -- debugger per Node / Chrome
+          'php-debug-adapter', -- debugger per PHP (Xdebug)
+          -- netcoredbg (C#) NON va installato da Mason: su macOS c'è solo la
+          -- build x64, che non fa il debug di .NET arm64. Vedi plugins/debug.lua.
         },
         run_on_start = true,
       }

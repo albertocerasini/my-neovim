@@ -50,6 +50,9 @@ return {
       -- backend / infra
       'rust',
       'dart',
+      'php', -- PHP con HTML incorporato (installa anche php_only)
+      'phpdoc',
+      'c_sharp',
       'sql',
       'prisma',
       'dockerfile',

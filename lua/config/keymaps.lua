@@ -15,8 +15,9 @@
 --   <leader>f   Find / File
 --   <leader>g   Git
 --
--- Le mappe locali al buffer (LSP, Rust, Flutter, web) sono in fondo al file,
--- nelle funzioni M.lsp() / M.rust() / M.flutter() / M.web().
+-- Le mappe locali al buffer (LSP, Rust, Flutter, web, PHP, .NET) sono in fondo
+-- al file, nelle funzioni M.lsp() / M.rust() / M.flutter() / M.web() /
+-- M.php() / M.dotnet().
 
 local M = {}
 local map = vim.keymap.set
@@ -451,12 +452,61 @@ function M.web(bufnr)
   wmap('<leader>rl', 'npm run lint', 'npm run lint')
 end
 
+--- Keymaps PHP (composer, phpunit).
+---@param bufnr integer
+function M.php(bufnr)
+  local function pmap(lhs, cmd, desc)
+    map('n', lhs, run(cmd), { buffer = bufnr, desc = 'PHP: ' .. desc })
+  end
+
+  pmap('<leader>rr', 'php ' .. vim.fn.shellescape(vim.api.nvim_buf_get_name(bufnr)), 'Esegui il file')
+  pmap('<leader>rt', 'vendor/bin/phpunit', 'phpunit')
+  pmap('<leader>ri', 'composer install', 'composer install')
+  pmap('<leader>ru', 'composer update', 'composer update')
+end
+
+--- Keymaps C# / .NET. run e watch puntano al .csproj del file corrente,
+--- così funzionano anche nelle solution con più progetti.
+---@param bufnr integer
+function M.dotnet(bufnr)
+  local function dmap(lhs, cmd, desc)
+    map('n', lhs, run(cmd), { buffer = bufnr, desc = '.NET: ' .. desc })
+  end
+
+  local project = vim.fs.root(bufnr, function(name)
+    return name:match '%.csproj$' ~= nil
+  end)
+  local target = project and (' --project ' .. vim.fn.shellescape(project)) or ''
+
+  dmap('<leader>rr', 'dotnet run' .. target, 'dotnet run')
+  dmap('<leader>rw', 'dotnet watch' .. target, 'dotnet watch')
+  dmap('<leader>rb', 'dotnet build', 'dotnet build')
+  dmap('<leader>rt', 'dotnet test', 'dotnet test')
+  dmap('<leader>ri', 'dotnet restore', 'dotnet restore')
+end
+
 -- Le mappe web sono locali ai buffer JS/TS/Svelte.
 vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup('user_keymaps_web', { clear = true }),
   pattern = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'svelte', 'vue', 'json' },
   callback = function(event)
     M.web(event.buf)
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('user_keymaps_php', { clear = true }),
+  pattern = 'php',
+  callback = function(event)
+    M.php(event.buf)
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('user_keymaps_dotnet', { clear = true }),
+  pattern = 'cs',
+  callback = function(event)
+    M.dotnet(event.buf)
   end,
 })
 

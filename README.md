@@ -1,7 +1,7 @@
 # Configurazione Neovim
 
 Configurazione modulare per **Rust, Flutter/Dart, React, Next.js, Node, Svelte,
-HTML/CSS/Tailwind, PostgreSQL, nginx** e affini.
+HTML/CSS/Tailwind, PHP, C#/.NET, PostgreSQL, nginx** e affini.
 
 Richiede **Neovim ≥ 0.12**, `git`, un compilatore C, [`ripgrep`](https://github.com/BurntSushi/ripgrep),
 [`fd`](https://github.com/sharkdp/fd), [`lazygit`](https://github.com/jesseduffield/lazygit)
@@ -31,7 +31,7 @@ lua/plugins/
   colorschemes.lua            temi disponibili nel selettore
   completion.lua              blink.cmp + LuaSnip
   database.lua                vim-dadbod-ui (PostgreSQL)
-  debug.lua                   nvim-dap + interfaccia + adapter Node/Chrome
+  debug.lua                   nvim-dap + interfaccia + adapter Node/Chrome/PHP/.NET
   editor.lua                  mini.nvim, autopairs, autotag, indent, progetti
   explorer.lua                nvim-tree
   format.lua                  conform.nvim
@@ -107,13 +107,13 @@ cerca tutte con Telescope.
 
 ### Run / Test — dipende dal linguaggio del buffer
 
-| Rust | Flutter | JS/TS |
-| ---- | ------- | ----- |
-| `<leader>rr` runnables | `<leader>rr` avvia l'app | `<leader>rr` npm run dev |
-| `<leader>rt` test | `<leader>rl` hot reload | `<leader>rb` npm run build |
-| `<leader>rd` debug | `<leader>rR` hot restart | `<leader>rt` npm test |
-| `<leader>rc` Cargo.toml | `<leader>rd` dispositivi | `<leader>ri` npm install |
-| `<leader>re` spiega errore | `<leader>ro` outline widget | `<leader>rl` npm run lint |
+| Rust | Flutter | JS/TS | PHP | C# / .NET |
+| ---- | ------- | ----- | --- | --------- |
+| `<leader>rr` runnables | `<leader>rr` avvia l'app | `<leader>rr` npm run dev | `<leader>rr` esegui il file | `<leader>rr` dotnet run |
+| `<leader>rt` test | `<leader>rl` hot reload | `<leader>rb` npm run build | `<leader>rt` phpunit | `<leader>rw` dotnet watch |
+| `<leader>rd` debug | `<leader>rR` hot restart | `<leader>rt` npm test | `<leader>ri` composer install | `<leader>rb` dotnet build |
+| `<leader>rc` Cargo.toml | `<leader>rd` dispositivi | `<leader>ri` npm install | `<leader>ru` composer update | `<leader>rt` dotnet test |
+| `<leader>re` spiega errore | `<leader>ro` outline widget | `<leader>rl` npm run lint | | `<leader>ri` dotnet restore |
 
 ### Colorscheme persistente
 
