@@ -12,7 +12,7 @@
 --   <leader>c   Codice / LSP          <leader>t   Terminale
 --   <leader>d   Debug (DAP)           <leader>u   UI / Toggle
 --   <leader>D   Database (SQL)        <leader>x   Diagnostica
---   <leader>f   Find / File
+--   <leader>f   Find / File           <leader>k   Docker
 --   <leader>g   Git
 --
 -- Le mappe locali al buffer (LSP, Rust, Flutter, web, PHP, .NET) sono in fondo
@@ -258,6 +258,44 @@ map('n', '<leader>gD', gs('diffthis', '@'), { desc = 'Diff con HEAD' })
 map('n', '<leader>gc', tb 'git_commits', { desc = 'Commit' })
 map('n', '<leader>gB', tb 'git_branches', { desc = 'Branch' })
 map('n', '<leader>gt', tb 'git_status', { desc = 'Stato del repository' })
+
+-- ╭─────────────────────────────────────────────────────────────────────────╮
+-- │  <leader>k — Docker (lazydocker)                                        │
+-- ╰─────────────────────────────────────────────────────────────────────────╯
+
+--- Apre lazydocker in un terminale flottante di toggleterm, come fa LazyGit.
+---@param dir? string directory di lavoro (default: la cwd)
+local function lazydocker(dir)
+  -- Senza questo controllo il float si chiude subito, senza alcun messaggio.
+  if vim.fn.executable 'lazydocker' == 0 then
+    vim.notify('lazydocker non trovato: brew install lazydocker', vim.log.levels.ERROR)
+    return
+  end
+
+  local terminal = require('toggleterm.terminal').Terminal:new {
+    cmd = 'lazydocker',
+    dir = dir,
+    direction = 'float',
+    hidden = true,
+    -- Sostituisce l'on_open globale: i tasti devono arrivare tutti alla TUI.
+    -- <Esc> serve a lazydocker per annullare, quindi va sottratto alla mappa globale
+    -- <Esc><Esc>: nowait evita l'attesa, la seconda mappa copre due <Esc> ravvicinati.
+    on_open = function(term)
+      local opts = { buffer = term.bufnr, nowait = true }
+      map('t', '<Esc>', '<Esc>', opts)
+      map('t', '<Esc><Esc>', '<Esc><Esc>', opts)
+    end,
+  }
+  terminal:open()
+end
+
+map('n', '<leader>kk', function()
+  lazydocker()
+end, { desc = 'LazyDocker' })
+map('n', '<leader>kK', function()
+  -- Lista annidata: stessa priorità ai quattro nomi, vince il file più vicino.
+  lazydocker(vim.fs.root(0, { { 'compose.yaml', 'compose.yml', 'docker-compose.yaml', 'docker-compose.yml' } }))
+end, { desc = 'LazyDocker (compose del file corrente)' })
 
 -- ╭─────────────────────────────────────────────────────────────────────────╮
 -- │  <leader>l — Lazy & Tools                                               │

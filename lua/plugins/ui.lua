@@ -19,6 +19,7 @@ return {
         { '<leader>D', group = 'Database', icon = ' ' },
         { '<leader>f', group = 'Find / File', icon = ' ', mode = { 'n', 'v' } },
         { '<leader>g', group = 'Git', icon = ' ', mode = { 'n', 'v' } },
+        { '<leader>k', group = 'Docker', icon = '󰡨 ' },
         { '<leader>l', group = 'Lazy & Tools', icon = '󰒓 ' },
         { '<leader>r', group = 'Run / Test', icon = ' ' },
         { '<leader>t', group = 'Terminale', icon = ' ' },

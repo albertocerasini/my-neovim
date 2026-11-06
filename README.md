@@ -4,11 +4,12 @@ Configurazione modulare per **Rust, Flutter/Dart, React, Next.js, Node, Svelte,
 HTML/CSS/Tailwind, PHP, C#/.NET, PostgreSQL, nginx** e affini.
 
 Richiede **Neovim ≥ 0.12**, `git`, un compilatore C, [`ripgrep`](https://github.com/BurntSushi/ripgrep),
-[`fd`](https://github.com/sharkdp/fd), [`lazygit`](https://github.com/jesseduffield/lazygit)
+[`fd`](https://github.com/sharkdp/fd), [`lazygit`](https://github.com/jesseduffield/lazygit),
+[`lazydocker`](https://github.com/jesseduffield/lazydocker)
 e la CLI [`tree-sitter`](https://formulae.brew.sh/formula/tree-sitter-cli):
 
 ```sh
-brew install ripgrep fd lazygit tree-sitter-cli
+brew install ripgrep fd lazygit lazydocker tree-sitter-cli
 ```
 
 Server LSP, formattatori e debugger vengono installati da Mason al primo avvio
@@ -38,7 +39,7 @@ lua/plugins/
   git.lua                     gitsigns + lazygit
   lsp.lua                     Mason + configurazione dei language server
   telescope.lua               ricerca fuzzy
-  terminal.lua                toggleterm
+  terminal.lua                toggleterm (usato anche per lazydocker)
   treesitter.lua              parser, highlighting, folding
   ui.lua                      which-key, barbar, indent guides, markdown
   lang/rust.lua               rustaceanvim + crates.nvim
@@ -67,6 +68,7 @@ cerca tutte con Telescope.
 | `<leader>D`  | Database       |
 | `<leader>f`  | Find / File    |
 | `<leader>g`  | Git            |
+| `<leader>k`  | Docker         |
 | `<leader>l`  | Lazy & Tools   |
 | `<leader>r`  | Run / Test     |
 | `<leader>t`  | Terminale      |
@@ -104,6 +106,15 @@ cerca tutte con Telescope.
 | `<leader>ca` `<leader>cr` | Azioni sul codice, rinomina |
 | `<leader>cf` | Formatta (anche in visuale) |
 | `<leader>cd` | Diagnostica sotto il cursore |
+
+### Docker
+
+| Tasto | Azione |
+| ----- | ------ |
+| `<leader>kk` | LazyDocker nella directory corrente |
+| `<leader>kK` | LazyDocker nella cartella del compose del file corrente |
+
+Si apre in un terminale flottante, come LazyGit; `q` lo chiude.
 
 ### Run / Test — dipende dal linguaggio del buffer
 
